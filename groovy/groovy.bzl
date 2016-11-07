@@ -100,6 +100,7 @@ _groovy_jar = rule(
             default = Label("@bazel_tools//tools/zip:zipper"),
             executable = True,
             single_file = True,
+            cfg = "host",
         ),
     },
     outputs = {
