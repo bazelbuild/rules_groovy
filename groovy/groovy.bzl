@@ -109,7 +109,7 @@ _groovy_jar = rule(
     implementation = _groovy_jar_impl,
 )
 
-def groovy_library(name, srcs=[], deps=[], testonly=0, **kwargs):
+def groovy_library(name, srcs=[], testonly=0, deps=[], **kwargs):
   """Rule analagous to java_library that accepts .groovy sources instead of
   .java sources. The result is wrapped in a java_import so that java rules may
   depend on it.
@@ -117,8 +117,8 @@ def groovy_library(name, srcs=[], deps=[], testonly=0, **kwargs):
   _groovy_jar(
       name = name + "-impl",
       srcs = srcs,
-      deps = deps,
       testonly = testonly,
+      deps = deps,
   )
   native.java_import(
       name = name,
