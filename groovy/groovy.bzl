@@ -128,7 +128,7 @@ def groovy_library(name, srcs=[], testonly=0, deps=[], **kwargs):
       **kwargs
   )
 
-def groovy_and_java_library(name, srcs=[], deps=[], **kwargs):
+def groovy_and_java_library(name, srcs=[], testonly=0, deps=[], **kwargs):
   """Accepts .groovy and .java srcs to create a groovy_library and a
   java_library. The groovy_library will depend on the java_library, so the
   Groovy code may reference the Java code but not vice-versa.
@@ -142,6 +142,7 @@ def groovy_and_java_library(name, srcs=[], deps=[], **kwargs):
     native.java_library(
         name = name + "-java",
         srcs = java_srcs,
+        testonly = testonly,
         deps = deps,
     )
     groovy_deps += [name + "-java"]
@@ -153,6 +154,7 @@ def groovy_and_java_library(name, srcs=[], deps=[], **kwargs):
     _groovy_jar(
         name = name + "-groovy",
         srcs = groovy_srcs,
+        testonly = testonly,
         deps = groovy_deps,
     )
     jars += ["lib" + name + "-groovy.jar"]
@@ -161,11 +163,12 @@ def groovy_and_java_library(name, srcs=[], deps=[], **kwargs):
   native.java_import(
       name = name,
       jars = jars,
+      testonly = testonly,
       deps = deps,
       **kwargs
   )
 
-def groovy_binary(name, main_class, srcs=[], deps=[], **kwargs):
+def groovy_binary(name, main_class, srcs=[], testonly=0, deps=[], **kwargs):
   """Rule analagous to java_binary that accepts .groovy sources instead of .java
   sources.
   """
@@ -174,6 +177,7 @@ def groovy_binary(name, main_class, srcs=[], deps=[], **kwargs):
     groovy_library(
         name = name + "-lib",
         srcs = srcs,
+        testonly = testonly,
         deps = deps,
     )
     all_deps += [name + "-lib"]
@@ -182,6 +186,7 @@ def groovy_binary(name, main_class, srcs=[], deps=[], **kwargs):
       name = name,
       main_class = main_class,
       runtime_deps = all_deps,
+      testonly = testonly,
       **kwargs
   )
 
