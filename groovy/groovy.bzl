@@ -21,7 +21,7 @@ def _groovy_jar_impl(ctx):
 
   # Extract all transitive dependencies
   # TODO(bazel-team): get transitive dependencies from other groovy libraries
-  all_deps = set(ctx.files.deps)
+  all_deps = depset(ctx.files.deps)
   for this_dep in ctx.attr.deps:
     if hasattr(this_dep, "java"):
       all_deps += this_dep.java.transitive_runtime_deps
@@ -206,7 +206,7 @@ def _groovy_test_impl(ctx):
   ]
 
   # Extract all transitive dependencies
-  all_deps = set(ctx.files.deps + ctx.files._implicit_deps + groovy_sdk_jars)
+  all_deps = depset(ctx.files.deps + ctx.files._implicit_deps + groovy_sdk_jars)
   for this_dep in ctx.attr.deps:
     if hasattr(this_dep, 'java'):
       all_deps += this_dep.java.transitive_runtime_deps
