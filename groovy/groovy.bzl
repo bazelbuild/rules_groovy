@@ -29,7 +29,7 @@ def _groovy_jar_impl(ctx):
   # Set up the output directory and set JAVA_HOME
   cmd = "rm -rf %s\n" % build_output
   cmd += "mkdir -p %s\n" % build_output
-  cmd += "export JAVA_HOME=external/local_jdk\n"
+  cmd += "export JAVA_HOME=%s\n" % ctx.attr._jdk[java_common.JavaRuntimeInfo].java_home
 
   # Set GROOVY_HOME by scanning through the groovy SDK to find the license file,
   # which should be at the root of the SDK.
