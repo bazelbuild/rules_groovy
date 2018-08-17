@@ -94,7 +94,7 @@ _groovy_jar = rule(
             default = Label("//external:groovy-sdk"),
         ),
         "_jdk": attr.label(
-            default = Label("//tools/defaults:jdk"),
+            default = Label("@bazel_tools//tools/jdk:current_java_runtime"),
         ),
         "_zipper": attr.label(
             default = Label("@bazel_tools//tools/zip:zipper"),
@@ -243,7 +243,7 @@ _groovy_test = rule(
             default = Label("//external:groovy-sdk"),
         ),
         "_jdk": attr.label(
-            default = Label("//tools/defaults:jdk"),
+            default = Label("@bazel_tools//tools/jdk:current_java_runtime"),
         ),
         "_implicit_deps": attr.label_list(default = [
             Label("//external:junit"),
