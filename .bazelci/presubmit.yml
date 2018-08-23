@@ -6,6 +6,9 @@ platforms:
   ubuntu1604:
     build_targets:
     - "..."
+  rbe_ubuntu1604:
+    build_targets:
+    - "..."
   macos:
     build_targets:
     - "..."
