@@ -5,7 +5,7 @@ groovy_library(
     srcs = glob(["*.groovy"]),
     visibility = ["//visibility:public"],
     deps = [
-      ":javalib",
+        ":javalib",
     ],
 )
 

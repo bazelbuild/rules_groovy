@@ -1,1 +1,4 @@
 /bazel-*
+
+# Ignore IntelliJ library files
+.ijwb
