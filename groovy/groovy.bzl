@@ -23,7 +23,14 @@ def _groovy_jar_impl(ctx):
 
     # Extract all transitive dependencies
     # TODO(bazel-team): get transitive dependencies from other groovy libraries
-    all_deps = depset(ctx.files.deps, transitive = [dep.java.transitive_runtime_deps for dep in ctx.attr.deps if hasattr(dep, "java")])
+    all_deps = depset(
+        ctx.files.deps,
+        transitive = [
+            dep[JavaInfo].transitive_runtime_deps
+            for dep in ctx.attr.deps
+            if JavaInfo in dep
+        ],
+    )
 
     # Set up the output directory and set JAVA_HOME
     cmd = "rm -rf %s\n" % build_output
