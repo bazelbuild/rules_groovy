@@ -13,6 +13,7 @@
 # limitations under the License.
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+load("@bazel_tools//tools/build_defs/repo:jvm.bzl", "jvm_maven_import_external")
 
 def _groovy_jar_impl(ctx):
     """Creates a .jar file from Groovy sources. Users should rely on
@@ -427,20 +428,22 @@ java_import(
         url = "http://bazel-mirror.storage.googleapis.com/repo1.maven.org/maven2/",
     )
 
-    native.maven_jar(
+    jvm_maven_import_external(
         name = "junit_artifact",
         artifact = "junit:junit:4.12",
-        server = "groovy_maven_server",
+        server_urls = ["http://bazel-mirror.storage.googleapis.com/repo1.maven.org/maven2/"],
+        licenses = ["notice"],
     )
     native.bind(
         name = "junit",
         actual = "@junit_artifact//jar",
     )
 
-    native.maven_jar(
+    jvm_maven_import_external(
         name = "spock_artifact",
         artifact = "org.spockframework:spock-core:0.7-groovy-2.0",
-        server = "groovy_maven_server",
+        server_urls = ["http://bazel-mirror.storage.googleapis.com/repo1.maven.org/maven2/"],
+        licenses = ["notice"],
     )
     native.bind(
         name = "spock",
