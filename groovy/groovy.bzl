@@ -39,9 +39,10 @@ def _groovy_jar_impl(ctx):
     cmd += "export JAVA_HOME=%s\n" % ctx.attr._jdk[java_common.JavaRuntimeInfo].java_home
 
     # Set GROOVY_HOME by scanning through the groovy SDK to find the license file,
-    # which should be at the root of the SDK.
+    # which should be at the root of the SDK. The name of the license file depends
+    # changed with newer versions of groovy.
     for file in ctx.files._groovysdk:
-        if file.basename == "CLI-LICENSE.txt":
+        if file.basename == "CLI-LICENSE.txt" or file.basename == "LICENSE":
             cmd += "export GROOVY_HOME=%s\n" % file.dirname
             break
 
@@ -403,17 +404,17 @@ def spock_test(
 def groovy_repositories():
     http_archive(
         name = "groovy_sdk_artifact",
-        url = "http://bazel-mirror.storage.googleapis.com/dl.bintray.com/groovy/maven/apache-groovy-binary-2.4.4.zip",
-        sha256 = "a7cc1e5315a14ea38db1b2b9ce0792e35174161141a6a3e2ef49b7b2788c258c",
+        url = "https://dl.bintray.com/groovy/maven/apache-groovy-binary-2.5.7.zip",
+        sha256 = "3d905dfe4f739c8c0d9dd181e6687ac816e451bf327a9ec0740da473cfebc9e0",
         build_file_content = """
 filegroup(
     name = "sdk",
-    srcs = glob(["groovy-2.4.4/**"]),
+    srcs = glob(["groovy-2.5.7/**"]),
     visibility = ["//visibility:public"],
 )
 java_import(
     name = "groovy",
-    jars = ["groovy-2.4.4/lib/groovy-2.4.4.jar"],
+    jars = ["groovy-2.5.7/lib/groovy-2.5.7.jar"],
     visibility = ["//visibility:public"],
 )
 """,
@@ -429,13 +430,13 @@ java_import(
 
     native.maven_server(
         name = "groovy_maven_server",
-        url = "http://bazel-mirror.storage.googleapis.com/repo1.maven.org/maven2/",
+        url = "https://jcenter.bintray.com",
     )
 
     jvm_maven_import_external(
         name = "junit_artifact",
         artifact = "junit:junit:4.12",
-        server_urls = ["http://bazel-mirror.storage.googleapis.com/repo1.maven.org/maven2/"],
+        server_urls = ["https://jcenter.bintray.com"],
         licenses = ["notice"],
     )
     native.bind(
@@ -445,8 +446,8 @@ java_import(
 
     jvm_maven_import_external(
         name = "spock_artifact",
-        artifact = "org.spockframework:spock-core:0.7-groovy-2.0",
-        server_urls = ["http://bazel-mirror.storage.googleapis.com/repo1.maven.org/maven2/"],
+        artifact = "org.spockframework:spock-core:1.3-groovy-2.5",
+        server_urls = ["https://jcenter.bintray.com"],
         licenses = ["notice"],
     )
     native.bind(
