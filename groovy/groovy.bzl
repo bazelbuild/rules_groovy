@@ -404,7 +404,10 @@ def spock_test(
 def groovy_repositories():
     http_archive(
         name = "groovy_sdk_artifact",
-        url = "https://dl.bintray.com/groovy/maven/apache-groovy-binary-2.5.7.zip",
+        urls = [
+            "https://bazel-mirror.storage.googleapis.com/dl.bintray.com/groovy/maven/apache-groovy-binary-2.5.7.zip",
+            "https://dl.bintray.com/groovy/maven/apache-groovy-binary-2.5.7.zip"
+        ],
         sha256 = "3d905dfe4f739c8c0d9dd181e6687ac816e451bf327a9ec0740da473cfebc9e0",
         build_file_content = """
 filegroup(
@@ -430,13 +433,13 @@ java_import(
 
     native.maven_server(
         name = "groovy_maven_server",
-        url = "https://jcenter.bintray.com",
+        url = "https://bazel-mirror.storage.googleapis.com/repo1.maven.org/maven2",
     )
 
     jvm_maven_import_external(
         name = "junit_artifact",
         artifact = "junit:junit:4.12",
-        server_urls = ["https://jcenter.bintray.com"],
+        server_urls = ["https://bazel-mirror.storage.googleapis.com/repo1.maven.org/maven2"],
         licenses = ["notice"],
     )
     native.bind(
@@ -447,7 +450,7 @@ java_import(
     jvm_maven_import_external(
         name = "spock_artifact",
         artifact = "org.spockframework:spock-core:1.3-groovy-2.5",
-        server_urls = ["https://jcenter.bintray.com"],
+        server_urls = ["https://bazel-mirror.storage.googleapis.com/repo1.maven.org/maven2"],
         licenses = ["notice"],
     )
     native.bind(
