@@ -431,11 +431,6 @@ java_import(
         actual = "@groovy_sdk_artifact//:groovy",
     )
 
-    native.maven_server(
-        name = "groovy_maven_server",
-        url = "https://mirror.bazel.build/repo1.maven.org/maven2",
-    )
-
     jvm_maven_import_external(
         name = "junit_artifact",
         artifact = "junit:junit:4.12",
