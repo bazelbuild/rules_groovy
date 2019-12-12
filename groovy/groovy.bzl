@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+load("@rules_java//java:defs.bzl", "java_binary", "java_import", "java_library")
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("@bazel_tools//tools/build_defs/repo:jvm.bzl", "jvm_maven_import_external")
 
@@ -127,7 +128,7 @@ def groovy_library(name, srcs = [], testonly = 0, deps = [], **kwargs):
         testonly = testonly,
         deps = deps,
     )
-    native.java_import(
+    java_import(
         name = name,
         jars = [name + "-impl"],
         testonly = testonly,
@@ -146,7 +147,7 @@ def groovy_and_java_library(name, srcs = [], testonly = 0, deps = [], **kwargs):
     # Put all .java sources in a java_library
     java_srcs = [src for src in srcs if src.endswith(".java")]
     if java_srcs:
-        native.java_library(
+        java_library(
             name = name + "-java",
             srcs = java_srcs,
             testonly = testonly,
@@ -167,7 +168,7 @@ def groovy_and_java_library(name, srcs = [], testonly = 0, deps = [], **kwargs):
         jars += ["lib" + name + "-groovy.jar"]
 
     # Output a java_import combining both libraries
-    native.java_import(
+    java_import(
         name = name,
         jars = jars,
         testonly = testonly,
@@ -188,8 +189,7 @@ def groovy_binary(name, main_class, srcs = [], testonly = 0, deps = [], **kwargs
             deps = deps,
         )
         all_deps += [name + "-lib"]
-
-    native.java_binary(
+    java_binary(
         name = name,
         main_class = main_class,
         runtime_deps = all_deps,
@@ -277,7 +277,7 @@ def groovy_test(
     # Create an extra jar to hold the resource files if any were specified
     all_deps = deps
     if resources:
-        native.java_library(
+        java_library(
             name = name + "-resources",
             resources = resources,
             testonly = 1,
@@ -313,7 +313,7 @@ def groovy_junit_test(
 
     # Put all Java sources into a Java library
     if java_srcs:
-        native.java_library(
+        java_library(
             name = name + "-javalib",
             srcs = java_srcs,
             testonly = 1,
@@ -368,7 +368,7 @@ def spock_test(
 
     # Put all Java sources into a Java library
     if java_srcs:
-        native.java_library(
+        java_library(
             name = name + "-javalib",
             srcs = java_srcs,
             testonly = 1,
