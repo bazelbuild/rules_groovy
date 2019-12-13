@@ -33,6 +33,12 @@ targets:
 
 The easiest way to do so is to add the following to your `WORKSPACE` file:
 
+<!---
+    Replace snippet w/ following after next tagged release:
+
+load("@io_bazel_rules_groovy//groovy:repositories.bzl", "rules_groovy_dependencies")
+rules_groovy_dependencies()
+-->
 ```python
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 http_archive(
