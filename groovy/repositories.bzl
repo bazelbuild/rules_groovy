@@ -61,6 +61,7 @@ java_import(
         artifact = "junit:junit:4.12",
         server_urls = ["https://mirror.bazel.build/repo1.maven.org/maven2"],
         licenses = ["notice"],
+        artifact_sha256 = "59721f0805e223d84b90677887d9ff567dc534d7c502ca903c0c2b17f05c116a",
     )
     native.bind(
         name = "junit",
@@ -72,6 +73,7 @@ java_import(
         artifact = "org.spockframework:spock-core:1.3-groovy-2.5",
         server_urls = ["https://mirror.bazel.build/repo1.maven.org/maven2"],
         licenses = ["notice"],
+        artifact_sha256 = "4e5c788ce5bac0bda41cd066485ce84ab50e3182d81a6789b82a3e265cd85f90",
     )
     native.bind(
         name = "spock",
