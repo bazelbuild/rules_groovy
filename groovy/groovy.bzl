@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+load("@bazel_skylib//lib:paths.bzl", "paths")
 load("@rules_java//java:defs.bzl", "java_binary", "java_import", "java_library")
 
 def _groovy_jar_impl(ctx):
@@ -195,13 +196,29 @@ def groovy_binary(name, main_class, srcs = [], testonly = 0, deps = [], **kwargs
         **kwargs
     )
 
-def path_to_class(path):
+def path_to_class(path, project_path):
+    if path.startswith(project_path):
+        path = path[len(project_path):]
+
     if path.startswith("src/test/groovy/"):
         return path[len("src/test/groovy/"):path.index(".groovy")].replace("/", ".")
     elif path.startswith("src/test/java/"):
         return path[len("src/test/java/"):path.index(".groovy")].replace("/", ".")
     else:
         fail("groovy_test sources must be under src/test/java or src/test/groovy")
+
+def runfiles_root(ctx):
+    return "${TEST_SRCDIR}/%s" % ctx.workspace_name
+
+def _java_bin(ctx):
+    java_path = str(ctx.attr._jdk[java_common.JavaRuntimeInfo].java_home)
+
+    if paths.is_absolute(java_path):
+        javabin = java_path
+    else:
+        runfiles_root_var = runfiles_root(ctx)
+        javabin = "%s/%s" % (runfiles_root_var, java_path)
+    return javabin + "/bin/java"
 
 def _groovy_test_impl(ctx):
     # Collect jars from the Groovy sdk
@@ -222,14 +239,20 @@ def _groovy_test_impl(ctx):
     )
 
     # Infer a class name from each src file
-    classes = [path_to_class(src.path) for src in ctx.files.srcs]
+    java_bin = _java_bin(ctx)
 
+    project_path = ctx.attr.generator_location[:ctx.attr.generator_location.index("BUILD:")]
+    classes = [path_to_class(src.path, project_path) for src in ctx.files.srcs]
+    
     # Write a file that executes JUnit on the inferred classes
-    cmd = "external/local_jdk/bin/java %s -cp %s org.junit.runner.JUnitCore %s\n" % (
+    cmd = "%s %s -cp %s org.junit.runner.JUnitCore %s\n" % (
+        java_bin,
         " ".join(ctx.attr.jvm_flags),
         ":".join([dep.short_path for dep in all_deps.to_list()]),
         " ".join(classes),
     )
+
+    # Return all dependencies needed to run the tests
     ctx.actions.write(
         output = ctx.outputs.executable,
         content = cmd,
@@ -351,15 +374,19 @@ def spock_test(
         resources = [],
         jvm_flags = [],
         size = "small",
-        tags = []):
+        tags = [],
+        include_external_deps = 1):
     groovy_lib_deps = deps + [
         "//external:junit",
         "//external:spock",
     ]
-    test_deps = deps + [
-        "//external:junit",
-        "//external:spock",
-    ]
+
+    test_deps = deps
+    if include_external_deps:
+        test_deps = deps + [
+            "//external:junit",
+            "//external:spock",
+        ]
 
     if len(specs) == 0:
         fail("Must provide at least one file in specs")
@@ -370,10 +397,7 @@ def spock_test(
             name = name + "-javalib",
             srcs = java_srcs,
             testonly = 1,
-            deps = deps + [
-                "//external:junit",
-                "//external:spock",
-            ],
+            deps = test_deps,
         )
         groovy_lib_deps += [name + "-javalib"]
         test_deps += [name + "-javalib"]
