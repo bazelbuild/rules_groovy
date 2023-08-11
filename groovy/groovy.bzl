@@ -26,7 +26,7 @@ def _groovy_jar_impl(ctx):
     all_deps = depset(
         ctx.files.deps,
         transitive = [
-            dep[JavaInfo].transitive_runtime_deps
+            dep[JavaInfo].transitive_runtime_jars
             for dep in ctx.attr.deps
             if JavaInfo in dep
         ],
@@ -215,7 +215,7 @@ def _groovy_test_impl(ctx):
     all_deps = depset(
         ctx.files.deps + ctx.files._implicit_deps + groovy_sdk_jars,
         transitive = [
-            dep[JavaInfo].transitive_runtime_deps
+            dep[JavaInfo].transitive_runtime_jars
             for dep in ctx.attr.deps
             if JavaInfo in dep
         ],
