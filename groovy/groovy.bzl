@@ -45,12 +45,30 @@ def _groovy_jar_impl(ctx):
             cmd += "export GROOVY_HOME=%s\n" % file.dirname
             break
 
+    # Create symbolic links to every classpath dependency.  We do this to
+    # shorten the "-cp" argument to groovyc, since the Linux length limit for
+    # any one command line argument is only 131072 characters.  The groovyc
+    # command needs to implement a way to specify very long classpaths.
+    i = 0
+    cp = ""
+    links = ""
+    cmd += "root=`pwd`\n"
+    for dep in all_deps.to_list():
+        link = "cp%d" % i
+        cmd += "ln -s $root/%s %s\n" % (dep.path, link)
+        cp += ":%s" % link
+        links += " %s" % link
+        i += 1
+
     # Compile all files in srcs with groovyc
     cmd += "$GROOVY_HOME/bin/groovyc %s -d %s %s\n" % (
-        "-cp " + ":".join([dep.path for dep in all_deps.to_list()]) if len(all_deps.to_list()) != 0 else "",
+        "-cp %s" % cp,
         build_output,
         " ".join([src.path for src in ctx.files.srcs]),
     )
+
+    # Remove the classpath links.
+    cmd += "rm -f %s\n" % links
 
     # Discover all of the generated class files and write their paths to a file.
     # Run the paths through sed to trim out everything before the package root so
@@ -62,7 +80,6 @@ def _groovy_jar_impl(ctx):
     )
 
     # Create a jar file using the discovered paths
-    cmd += "root=`pwd`\n"
     cmd += "cd %s; $root/%s Cc ../%s @class_list\n" % (
         build_output,
         ctx.executable._zipper.path,
