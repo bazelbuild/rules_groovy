@@ -1,6 +1,15 @@
 [![Build status](https://badge.buildkite.com/5745498acd50b9811f2bdb2fc26defd3c3f01bed96ffe6fb5a.svg)](https://buildkite.com/bazel/rules-groovy-postsubmit)
 
-# Groovy Rules
+# 📣 [Unmaintained] Groovy Rules
+
+> [!WARNING]
+> Due to an absence of any maintainers, this repository is archived and currently unmaintained.
+>
+> **We discourage any new dependencies on the contents of this repository.**
+>
+> If you, or your organization, are interested in revitalizing this project by taking over its maintenance, we welcome your initiative.
+> To discuss the process of un-archiving and assuming ownership of this repository, please reach out to us via email at `bazel-contrib@googlegroups.com` or join the conversation on our Slack workspace in the `#rules` channel.
+> You can sign up for Slack access at [https://slack.bazel.build](https://slack.bazel.build).
 
 <div class="toc">
   <h2>Rules</h2>
